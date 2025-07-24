@@ -211,11 +211,7 @@ const agent = createToolCallingAgent({
   prompt: agentPrompt,
 });
 
-const agentExecutor = new AgentExecutor({
-  agent,
-  tools,
-  verbose: process.env.NODE_ENV === 'development', // Log agent thoughts in development
-});
+// AgentExecutor removed - using direct pattern matching instead
 
 // Helper function to detect if a message is a math question
 function isMathQuestion(message: string): boolean {

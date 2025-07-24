@@ -2,7 +2,7 @@
 "use client"; // This line is crucial for client-side components in App Router
 
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessage, ChatApiResponse, MathToolOutput, QuizToolOutput, QuizQuestionData, MathSubStep } from '@/lib/types';
+import { ChatMessage, ChatApiResponse, MathToolOutput, QuizToolOutput, QuizQuestionData } from '@/lib/types';
 import MessageDisplay from '@/components/MessageDisplay';
 
 export default function ChatPage() {

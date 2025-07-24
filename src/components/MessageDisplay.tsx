@@ -1,7 +1,8 @@
 // src/components/MessageDisplay.tsx
+import React from 'react';
 import { ChatMessage } from '@/lib/types';
 import MathSteps from '@/components/MathSteps'; 
-import QuizCard from '@/components/QuizCard';   
+import QuizCard from '@/components/QuizCard';
 
 interface MessageDisplayProps {
   message: ChatMessage;
@@ -9,9 +10,9 @@ interface MessageDisplayProps {
 }
 
 // Helper function to format text content with basic markdown-like styling
-function formatTextContent(content: string): JSX.Element {
+function formatTextContent(content: string): React.ReactElement {
   const lines = content.split('\n');
-  const elements: JSX.Element[] = [];
+  const elements: React.ReactElement[] = [];
   
   lines.forEach((line, index) => {
     const trimmedLine = line.trim();
@@ -88,9 +89,9 @@ function formatTextContent(content: string): JSX.Element {
 }
 
 // Helper function to format inline text (bold, etc.)
-function formatInlineText(text: string): JSX.Element {
+function formatInlineText(text: string): React.ReactElement {
   const parts = text.split(/\*\*(.*?)\*\*/g);
-  const elements: (string | JSX.Element)[] = [];
+  const elements: React.ReactNode[] = [];
   
   parts.forEach((part, index) => {
     if (index % 2 === 1) {
@@ -98,7 +99,9 @@ function formatInlineText(text: string): JSX.Element {
       elements.push(<strong key={index} className="font-semibold text-gray-900">{part}</strong>);
     } else {
       // Regular text
-      elements.push(part);
+      if (part) {
+        elements.push(part);
+      }
     }
   });
   
