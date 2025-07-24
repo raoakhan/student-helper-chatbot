@@ -62,7 +62,7 @@ const showMathStepsTool = tool(
       console.log('🔧 DEBUG: Raw LLM response:', content);
 
       // Attempt to parse JSON. LLMs can sometimes wrap JSON in markdown.
-      let jsonString = content.includes('```json')
+      const jsonString = content.includes('```json')
         ? content.split('```json')[1].split('```')[0].trim()
         : content;
 
@@ -143,7 +143,7 @@ const askQuizQuestionTool = tool(
       const response = await proLLM.invoke(prompt);
       const content = String(response.content);
 
-      let jsonString = content.includes('```json')
+      const jsonString = content.includes('```json')
         ? content.split('```json')[1].split('```')[0].trim()
         : content;
 
