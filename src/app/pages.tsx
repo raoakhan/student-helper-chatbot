@@ -84,7 +84,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-blue-50 to-purple-100">
       <header className="bg-blue-600 text-white p-4 text-center text-2xl font-bold">
         Student Helper Chatbot
       </header>
@@ -109,6 +109,7 @@ export default function ChatPage() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+           readOnly={loading}
           placeholder="Ask your academic question..."
           className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={loading}

@@ -2,56 +2,110 @@
 import React from 'react';
 import { QuizQuestionData } from '@/lib/types';
 
+interface QuizState {
+  answered: boolean;
+  selectedChoice: string | null;
+  isCorrect: boolean | null;
+}
+
 interface QuizCardProps {
   quizData: QuizQuestionData;
-  quizState?: {
-    answered: boolean;
-    selectedChoice: string | null;
-    isCorrect: boolean | null;
-  };
+  quizState?: QuizState;
   onAnswer?: (selectedChoice: string) => void;
 }
 
 const QuizCard: React.FC<QuizCardProps> = ({ quizData, quizState, onAnswer }) => {
-  const { question, choices, correctAnswer } = quizData;
-  const { answered, selectedChoice, isCorrect } = quizState || { answered: false, selectedChoice: null, isCorrect: null };
-
-  const getButtonClasses = (choice: string) => {
-    let classes = "px-4 py-2 rounded-lg text-left w-full transition-colors duration-200 ";
-    if (answered) {
-      if (choice === correctAnswer) {
-        classes += "bg-green-200 text-green-800 border-green-400"; // Correct answer
-      } else if (choice === selectedChoice) {
-        classes += "bg-red-200 text-red-800 border-red-400"; // Incorrectly selected
-      } else {
-        classes += "bg-gray-200 text-gray-700 border-gray-300 opacity-70"; // Unselected
-      }
-      classes += " cursor-not-allowed";
-    } else {
-      classes += "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200";
+  const handleChoiceClick = (choice: string) => {
+    if (!quizState?.answered && onAnswer) {
+      onAnswer(choice);
     }
-    return classes;
+  };
+
+  const getChoiceStyle = (choice: string) => {
+    if (!quizState?.answered) {
+      return "bg-white hover:bg-purple-50 hover:border-purple-300 cursor-pointer transform hover:scale-[1.02] transition-all duration-200";
+    }
+
+    if (choice === quizData.correctAnswer) {
+      return "bg-green-50 border-green-400 text-green-800 shadow-md";
+    }
+
+    if (choice === quizState.selectedChoice && choice !== quizData.correctAnswer) {
+      return "bg-red-50 border-red-400 text-red-800 shadow-md";
+    }
+
+    return "bg-gray-50 text-gray-500 opacity-75";
+  };
+
+  const getChoiceIcon = (choice: string) => {
+    if (!quizState?.answered) return null;
+    
+    if (choice === quizData.correctAnswer) {
+      return <span className="text-green-600 font-bold ml-2">✓</span>;
+    }
+    
+    if (choice === quizState.selectedChoice && choice !== quizData.correctAnswer) {
+      return <span className="text-red-600 font-bold ml-2">✗</span>;
+    }
+    
+    return null;
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mt-2 border border-gray-200">
-      <p className="font-semibold text-lg mb-4">{question}</p>
+    <div className="bg-purple-50 rounded-lg p-4 mt-3 border-l-4 border-purple-400">
+      <div className="flex items-center mb-4">
+        <span className="text-purple-600 text-lg mr-2">🧠</span>
+        <h3 className="font-semibold text-purple-800">Quiz Question</h3>
+      </div>
+      
+      <div className="bg-white rounded-md p-4 shadow-sm mb-4">
+        <h4 className="font-medium text-gray-800 text-lg leading-relaxed">{quizData.question}</h4>
+      </div>
+      
       <div className="space-y-3">
-        {choices.map((choice, index) => (
+        {quizData.choices.map((choice, index) => (
           <button
             key={index}
-            onClick={() => onAnswer && !answered && onAnswer(choice)}
-            className={getButtonClasses(choice)}
-            disabled={answered}
+            onClick={() => handleChoiceClick(choice)}
+            disabled={quizState?.answered}
+            className={`w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ${
+              getChoiceStyle(choice)
+            } disabled:cursor-not-allowed flex items-center justify-between`}
           >
-            {choice}
+            <div className="flex items-center">
+              <span className="flex-shrink-0 w-8 h-8 bg-purple-500 text-white text-sm font-bold rounded-full flex items-center justify-center mr-3">
+                {String.fromCharCode(65 + index)}
+              </span>
+              <span className="font-medium">{choice}</span>
+            </div>
+            {getChoiceIcon(choice)}
           </button>
         ))}
       </div>
-      {answered && (
-        <p className={`mt-4 font-bold text-center ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-          {isCorrect ? 'Correct!' : `Incorrect. The correct answer was: ${correctAnswer}`}
-        </p>
+
+      {quizState?.answered && (
+        <div className={`mt-4 p-4 rounded-lg border-l-4 ${
+          quizState.isCorrect 
+            ? 'bg-green-50 border-green-400' 
+            : 'bg-red-50 border-red-400'
+        }`}>
+          {quizState.isCorrect ? (
+            <div className="flex items-center">
+              <span className="text-2xl mr-2">🎉</span>
+              <p className="text-green-700 font-semibold">Excellent! You got it right!</p>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center mb-2">
+                <span className="text-2xl mr-2">💡</span>
+                <p className="text-red-700 font-semibold">Not quite right, but keep learning!</p>
+              </div>
+              <p className="text-gray-700">
+                The correct answer is: <span className="font-semibold text-green-700">{quizData.correctAnswer}</span>
+              </p>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
